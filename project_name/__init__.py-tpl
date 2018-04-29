@@ -1,0 +1,8 @@
+try:
+    import pkg_resources
+    __version__ = pkg_resources.require(__name__)[0].version
+except:
+    import os
+    from django.conf import settings
+    with open(os.path.join(settings.BASE_DIR, 'VERSION')) as _version_file:
+        __version__ = _version_file.read().strip()

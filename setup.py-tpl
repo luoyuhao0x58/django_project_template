@@ -1,0 +1,35 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import json
+from setuptools import setup, find_packages
+
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VERSION')
+          ) as _version_file:
+    __version__ = _version_file.read().strip()
+
+
+def _get_packages_from_pipenv(dep='default'):
+    with open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     'Pipfile.lock')) as _pip_lock_file:
+        _packages_meta_info = json.load(_pip_lock_file)
+    return list(map(
+        lambda item: item[0] + item[1]["version"],
+        _packages_meta_info[dep].items()))
+
+
+_require_packages = _get_packages_from_pipenv('default')
+_require_dev_packages = _get_packages_from_pipenv('develop')
+
+
+setup(
+    name='{{ project_name }}',
+    version=__version__,
+    install_requires=_require_packages,
+    tests_require=_require_dev_packages,
+    include_package_data=True,
+    packages=find_packages(),
+    zip_safe=True,
+)
